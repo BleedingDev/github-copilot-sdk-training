@@ -1,0 +1,22 @@
+{
+  "repository": "sample-booking-app-monorepo-fixture",
+  "note": "Synthetic workshop map. This repo is not the real GitHub Copilot SDK codebase.",
+  "modules": [
+    {
+      "name": "booking-detail-web",
+      "language": "TypeScript/Next.js",
+      "paths": ["apps/web/src/modules/booking-detail"]
+    },
+    {
+      "name": "booking-detail-api",
+      "language": "PHP",
+      "paths": ["services/php/src/BookingDetail"]
+    },
+    {
+      "name": "booking-detail-tests",
+      "language": "Cypress/Codeception",
+      "paths": ["tests/cypress/booking-detail", "tests/codeception/booking-detail"]
+    }
+  ]
+}
+

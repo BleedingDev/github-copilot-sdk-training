@@ -1,0 +1,25 @@
+{
+  "key": "LAB-101",
+  "title": "Expose fare-family warnings in Sample Booking App booking detail",
+  "type": "Story",
+  "priority": "High",
+  "module": "booking-detail",
+  "summary": "When a booking contains mixed fare families, Sample Booking App should surface warning metadata next to each affected itinerary segment.",
+  "acceptanceCriteria": [
+    "API response contains warning codes grouped by itinerary segment id.",
+    "Next.js booking detail page renders warning badges from the API response.",
+    "Cypress smoke test covers a booking with two affected segments.",
+    "Second-brain documentation is updated only with claims supported by the diff and test evidence."
+  ],
+  "candidatePaths": [
+    "apps/web/src/modules/booking-detail",
+    "services/php/src/BookingDetail",
+    "tests/cypress/booking-detail"
+  ],
+  "nonGoals": [
+    "Do not redesign the booking detail page.",
+    "Do not rewrite existing pricing modules.",
+    "Do not create new Jira, Zephyr, or MCP integrations."
+  ]
+}
+
