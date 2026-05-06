@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Environment and local config
+.env
+.env.*
+!.env.example
+.mise.local.toml
+
+# Copilot / workshop runtime state
+.copilot-lab/
+reports/*.jsonl
+reports/*.log
+
+# Package-manager caches and logs
+.pnpm-store/
+.npm/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript / test caches
+*.tsbuildinfo
+.vitest/
+.vite/
+
+# Docker / local volumes
+.docker/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+

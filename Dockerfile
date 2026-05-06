@@ -1,0 +1,35 @@
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PROTO_HOME=/root/.proto
+ENV PATH=/root/.proto/shims:/root/.proto/bin:$PATH
+ENV COPILOT_HOME=/workspace/.copilot-lab
+ENV COPILOT_MODEL=gpt-5.2-codex
+ENV COPILOT_TIMEOUT_MS=180000
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    jq \
+    libatomic1 \
+    ripgrep \
+    unzip \
+    xz-utils \
+    zsh \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN bash -c 'bash <(curl -fsSL https://moonrepo.dev/install/proto.sh)'
+
+WORKDIR /workspace
+
+COPY .prototools package.json pnpm-lock.yaml ./
+RUN proto install
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
+CMD ["pnpm", "run", "lab:help"]
