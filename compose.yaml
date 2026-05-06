@@ -1,0 +1,23 @@
+name: github-copilot-sdk-training
+
+services:
+  lab:
+    build:
+      context: .
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - lab-node-modules:/workspace/node_modules
+      - lab-copilot-home:/workspace/.copilot-lab
+    environment:
+      COPILOT_MODEL: ${COPILOT_MODEL:-gpt-5.2-codex}
+      COPILOT_HOME: /workspace/.copilot-lab
+      COPILOT_TIMEOUT_MS: ${COPILOT_TIMEOUT_MS:-180000}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GH_TOKEN: ${GH_TOKEN:-}
+    entrypoint: ["./scripts/docker-entrypoint.sh"]
+    command: ["pnpm", "run", "lab:help"]
+
+volumes:
+  lab-node-modules:
+  lab-copilot-home:
