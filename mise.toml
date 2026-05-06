@@ -1,0 +1,59 @@
+[tools]
+node = "26.0.0"
+pnpm = "10.33.4"
+
+[env]
+COPILOT_MODEL = "gpt-5.2-codex"
+COPILOT_HOME = ".copilot-lab"
+COPILOT_TIMEOUT_MS = "180000"
+
+[tasks.setup]
+description = "Nainstaluje pnpm závislosti přes lockfile."
+run = "pnpm install --frozen-lockfile"
+
+[tasks.verify]
+description = "Spustí TypeScript typecheck a unit testy."
+depends = ["setup"]
+run = "pnpm run verify"
+
+[tasks.start]
+description = "Rychlý start pro účastníka: setup, help a dry-run."
+depends = ["setup"]
+run = [
+  "pnpm run lab:help",
+  "pnpm run lab:dry-run"
+]
+
+[tasks."lab:help"]
+description = "Vypíše nápovědu aktuální stage větve."
+run = "pnpm run lab:help"
+
+[tasks."lab:dry-run"]
+description = "Vypíše cíl aktuálního cvičení bez volání Copilota."
+run = "pnpm run lab:dry-run"
+
+[tasks."lab:models"]
+description = "Vypíše modely dostupné pro aktuální Copilot účet."
+depends = ["setup"]
+run = "pnpm run lab -- models"
+
+[tasks."lab:challenge"]
+description = "Vypíše challenge brief pro LAB-101."
+depends = ["setup"]
+run = "pnpm run lab -- challenge LAB-101"
+
+[tasks."docker:build"]
+description = "Postaví lokální Docker image pro lab."
+run = "docker build -t github-copilot-sdk-training ."
+
+[tasks."docker:shell"]
+description = "Otevře shell uvnitř Docker image s přimountovaným repozitářem."
+run = "docker compose run --rm lab zsh"
+
+[tasks."docker:verify"]
+description = "Spustí typecheck a testy uvnitř Dockeru."
+run = "docker compose run --rm lab pnpm run verify"
+
+[tasks."docker:lab"]
+description = "Spustí lab help uvnitř Dockeru."
+run = "docker compose run --rm lab pnpm run lab:help"
