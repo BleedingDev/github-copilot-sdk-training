@@ -1,0 +1,8 @@
+.git
+node_modules
+.copilot-lab
+reports/*.jsonl
+coverage
+.DS_Store
+*.log
+

@@ -1,0 +1,63 @@
+# Docker
+
+Docker varianta je určená pro účastníky, kteří jsou zvyklí pouštět tooling v
+kontejneru.
+
+## Build
+
+```bash
+docker build -t github-copilot-sdk-training .
+```
+
+nebo přes mise:
+
+```bash
+mise run docker:build
+```
+
+## Shell
+
+```bash
+docker compose run --rm lab zsh
+```
+
+nebo:
+
+```bash
+mise run docker:shell
+```
+
+## Ověření
+
+```bash
+docker compose run --rm lab pnpm run verify
+```
+
+nebo:
+
+```bash
+mise run docker:verify
+```
+
+## Copilot uvnitř Dockeru
+
+Docker image instaluje Node a pnpm přes proto podle `.prototools`. Docker setup
+záměrně nemountuje hostitelské credential adresáře. Pro živá Copilot SDK volání
+použijte tokeny schválené týmem nebo se přihlaste uvnitř kontejneru podle
+interních pravidel.
+
+Předané env proměnné:
+
+- `COPILOT_MODEL`
+- `COPILOT_HOME`
+- `COPILOT_TIMEOUT_MS`
+- `GITHUB_TOKEN`
+- `GH_TOKEN`
+
+Bez autentizace pořád fungují:
+
+```bash
+pnpm run lab:dry-run
+pnpm run typecheck
+pnpm test
+```

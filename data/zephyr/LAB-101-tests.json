@@ -1,0 +1,18 @@
+{
+  "issueKey": "LAB-101",
+  "tests": [
+    {
+      "id": "ZEP-8841",
+      "name": "Booking detail displays fare-family warning badges",
+      "layer": "cypress",
+      "tags": ["booking-detail", "pricing", "smoke"]
+    },
+    {
+      "id": "ZEP-8842",
+      "name": "API groups warning codes by itinerary segment",
+      "layer": "codeception",
+      "tags": ["api", "booking-detail"]
+    }
+  ]
+}
+
