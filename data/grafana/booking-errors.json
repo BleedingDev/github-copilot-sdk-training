@@ -1,0 +1,14 @@
+{
+  "query": "service=booking-detail fareFamilyWarning",
+  "window": "2026-05-01T00:00:00Z/2026-05-07T00:00:00Z",
+  "hits": [
+    {
+      "timestamp": "2026-05-06T09:17:23Z",
+      "level": "warn",
+      "message": "fareFamilyWarning missing for segment S2",
+      "bookingId": "DEMO-1942",
+      "traceId": "trace-demo-001"
+    }
+  ]
+}
+
