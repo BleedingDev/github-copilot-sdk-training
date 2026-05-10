@@ -5,8 +5,8 @@ import { containsDestructiveCommand } from "./permissions.js";
 const SCOPE_REMINDER = `
 
 Scope reminder:
-- Drž se aktuálního promptu a aktuální větve.
-- Nekoukej do jiných git větví.
+- Drž se aktuálního promptu a lokálního checkoutu.
+- Nepátrej po hotových řešeních mimo zadání.
 - Pokud potřebuješ změnu mimo lane ownership, popiš závislost místo úpravy.
 `;
 
