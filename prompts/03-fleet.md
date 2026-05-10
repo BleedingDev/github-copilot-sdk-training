@@ -6,7 +6,7 @@ Kontext:
 
 - Pracuj pouze v aktuálním checkoutu.
 - Už existuje `pnpm run lab plan LAB-101`.
-- Tohle cvičení je jen o `session.rpc.fleet.start(...)`, usage metrikách a task listu.
+- Tohle cvičení je o `session.rpc.fleet.start(...)`, task supervision, usage metrikách a task listu.
 - Nepřidávej enterprise MCP integrace, custom agents ani guardrails.
 
 Úkol:
@@ -32,12 +32,22 @@ Kontext:
    - Docs evidence.
 6. Po spuštění vypiš:
    - výsledek `fleet.start`,
-   - `session.rpc.tasks.list()`,
+   - počáteční `session.rpc.tasks.list()`,
+   - průběžný stav přes polling `session.rpc.tasks.list()`,
+   - finální `session.rpc.tasks.list()`,
    - `session.rpc.usage.getMetrics()`.
+7. Čekej na dokončení tasků s timeoutem:
+   - timeout čti z `COPILOT_FLEET_TIMEOUT_MS`,
+   - interval čti z `COPILOT_FLEET_POLL_MS`,
+   - quiescence interval čti z `COPILOT_FLEET_IDLE_GRACE_MS`,
+   - stav `running` považuj za aktivní,
+   - stav `idle` považuj za settled background stav až poté, co task list zůstane stabilní po celý quiescence interval,
+   - pokud task skončí `failed` nebo `cancelled`, příkaz musí selhat,
+   - pokud timeout doběhne, aktivní tasky zruš přes `session.rpc.tasks.cancel(...)` a příkaz musí selhat.
 
 Akceptace:
 
 - `pnpm run typecheck` projde.
 - `pnpm run lab fleet LAB-101` existuje.
 - Prompt jasně říká, že lanes nesmí přepisovat stejné soubory.
-
+- Příkaz nekončí hned po `fleet.start`; buď vypíše finální task stav, nebo řízeně selže.
