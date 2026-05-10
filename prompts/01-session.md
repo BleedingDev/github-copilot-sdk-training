@@ -15,6 +15,7 @@ Kontext:
    - `COPILOT_MODEL`,
    - volitelný `COPILOT_HOME`,
    - `COPILOT_TIMEOUT_MS`,
+   - `COPILOT_START_TIMEOUT_MS`,
    - volitelný `COPILOT_GITHUB_TOKEN`.
 2. Přidej `src/lib/events.ts`, který loguje jen užitečné session eventy:
    - streaming message delta,
@@ -26,7 +27,7 @@ Kontext:
    - `auth` - ověří přihlášení přes `client.getAuthStatus()` a `client.listModels()`,
    - `models` - vypíše dostupné modely přes `client.listModels()`,
    - `ask <prompt>` - vytvoří session, pošle prompt přes `sendAndWait`, streamuje odpověď.
-4. Před RPC voláním explicitně zavolej `await client.start()`.
+4. Před RPC voláním explicitně zavolej `await client.start()` a start/auth ověření obal timeoutem.
 5. `copilotHome` nastav jen tehdy, když je `COPILOT_HOME` explicitně vyplněné. Výchozí běh má použít standardní Copilot CLI login.
 6. Pokud je vyplněný `COPILOT_GITHUB_TOKEN`, předej ho do `CopilotClient` i do `createSession(...)`.
 7. Použij `clientName: "github-copilot-sdk-training"`.
@@ -39,3 +40,4 @@ Akceptace:
 - `pnpm run lab auth` existuje a při chybě autentizace vypíše srozumitelnou instrukci.
 - `pnpm run lab models` existuje.
 - `pnpm run lab ask "Summarize this lab in one paragraph."` existuje.
+- Když se headless Copilot proces zasekne při startu, CLI skončí timeoutem místo nekonečného čekání.

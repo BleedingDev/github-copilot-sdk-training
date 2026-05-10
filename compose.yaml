@@ -12,6 +12,7 @@ services:
     environment:
       COPILOT_MODEL: ${COPILOT_MODEL:-gpt-5.2-codex}
       COPILOT_TIMEOUT_MS: ${COPILOT_TIMEOUT_MS:-180000}
+      COPILOT_START_TIMEOUT_MS: ${COPILOT_START_TIMEOUT_MS:-30000}
       COPILOT_GITHUB_TOKEN: ${COPILOT_GITHUB_TOKEN:-}
     entrypoint: ["./scripts/docker-entrypoint.sh"]
     command: ["pnpm", "run", "lab:help"]

@@ -50,6 +50,7 @@ Předané env proměnné:
 
 - `COPILOT_MODEL`
 - `COPILOT_TIMEOUT_MS`
+- `COPILOT_START_TIMEOUT_MS`
 - `COPILOT_GITHUB_TOKEN`
 
 `COPILOT_HOME` nastavujte jen záměrně, pokud chcete oddělený Copilot CLI config.
