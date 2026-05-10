@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   assertFleetTasksStarted,
   assertFleetTasksSucceeded,
+  buildFleetPreview,
   buildFleetPrompt,
   formatFleetTaskSummary,
+  parseFleetCommandArgs,
   waitForFleetTasksToSettle,
   type FleetTaskList,
 } from "../src/lib/fleet.js";
@@ -126,5 +128,36 @@ describe("buildFleetPrompt", () => {
         ],
       }),
     ).toBe("api:completed, ui:running");
+  });
+
+  it("defaults fleet command to preview mode", () => {
+    expect(parseFleetCommandArgs([])).toEqual({ issueKey: "LAB-101", live: false });
+    expect(parseFleetCommandArgs(["LAB-202", "--live"])).toEqual({ issueKey: "LAB-202", live: true });
+    expect(() => parseFleetCommandArgs(["--unsafe"])).toThrow("Neznámý fleet přepínač");
+  });
+
+  it("makes live fleet execution explicit in preview output", () => {
+    const issue: LabIssue = {
+      key: "LAB-101",
+      title: "Expose warnings",
+      type: "Story",
+      priority: "High",
+      module: "booking-detail",
+      summary: "Show warnings.",
+      acceptanceCriteria: [],
+      candidatePaths: ["apps/web/src/modules/booking-detail"],
+      nonGoals: [],
+    };
+    const repoMap: RepoMap = {
+      repository: "fixture",
+      note: "test",
+      modules: [],
+    };
+
+    const preview = buildFleetPreview(issue, repoMap);
+
+    expect(preview).toContain("bezpečný preview režim");
+    expect(preview).toContain("pnpm run lab fleet LAB-101 --live");
+    expect(preview).toContain("git diff --stat");
   });
 });
