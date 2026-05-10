@@ -14,7 +14,7 @@ Kontext:
 1. Přidej příkaz:
 
    ```bash
-   pnpm run lab -- plan LAB-101
+   pnpm run lab plan LAB-101
    ```
 
 2. Příkaz vytvoří session, přepne ji do `plan` módu a přes `session.rpc.plan.update(...)`
@@ -28,6 +28,6 @@ Kontext:
 Akceptace:
 
 - `pnpm run typecheck` projde.
-- `pnpm run lab -- plan LAB-101` existuje.
+- `pnpm run lab plan LAB-101` existuje.
 - Plán je krátký, konkrétní a rozděluje práci na Dev, QA a Docs část.
 

@@ -22,7 +22,8 @@ Kontext:
    - přes `onPostToolUse` zapíše auditní záznam,
    - přes `onErrorOccurred` zapíše chybu.
 4. Zapoj guardrails do příkazů `ask`, `plan` a `fleet`.
-5. Nepřepisuj existující SDK tok, jen přidej kontrolní vrstvu.
+5. Pokud SDK pošle `session.error` nebo `model.call_failure`, příkaz nesmí skončit jako úspěšný běh.
+6. Nepřepisuj existující SDK tok, jen přidej kontrolní vrstvu.
 
 Akceptace:
 
@@ -30,4 +31,3 @@ Akceptace:
 - `pnpm test` projde.
 - V `reports/` vzniká JSONL audit při živém běhu.
 - Destruktivní příkazy jsou odmítnuté jak permission handlerem, tak hookem.
-

@@ -28,9 +28,8 @@ describe("control-plane config", () => {
   it("configures discovery, skills and instructions", () => {
     const config = buildControlPlaneConfig({});
 
-    expect(config.enableConfigDiscovery).toBe(true);
+    expect(config.enableConfigDiscovery).toBe(false);
     expect(config.skillDirectories).toEqual(["skills"]);
-    expect(config.instructionDirectories).toEqual(["instructions/github-copilot-sdk"]);
+    expect(config.instructionDirectories).toEqual(["instructions/workshop"]);
   });
 });
-

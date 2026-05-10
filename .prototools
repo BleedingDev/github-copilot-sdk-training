@@ -8,5 +8,5 @@ telemetry = false
 
 [env]
 COPILOT_MODEL = "gpt-5.2-codex"
-COPILOT_HOME = ".copilot-lab"
 COPILOT_TIMEOUT_MS = "180000"
+NODE_OPTIONS = "--no-deprecation"
