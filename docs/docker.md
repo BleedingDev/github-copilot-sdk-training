@@ -43,16 +43,17 @@ mise run docker:verify
 
 Docker image instaluje Node a pnpm přes proto podle `.prototools`. Docker setup
 záměrně nemountuje hostitelské credential adresáře. Pro živá Copilot SDK volání
-použijte tokeny schválené týmem nebo se přihlaste uvnitř kontejneru podle
-interních pravidel.
+použijte fine-grained token s `Copilot Requests` permission nebo se přihlaste
+uvnitř kontejneru podle interních pravidel.
 
 Předané env proměnné:
 
 - `COPILOT_MODEL`
-- `COPILOT_HOME`
 - `COPILOT_TIMEOUT_MS`
-- `GITHUB_TOKEN`
-- `GH_TOKEN`
+- `COPILOT_GITHUB_TOKEN`
+
+`COPILOT_HOME` nastavujte jen záměrně, pokud chcete oddělený Copilot CLI config.
+Bez této proměnné CLI používá standardní přihlášení v `~/.copilot`.
 
 Bez autentizace pořád fungují:
 
