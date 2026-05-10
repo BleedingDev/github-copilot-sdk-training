@@ -16,6 +16,9 @@ Kontext:
    - volitelný `COPILOT_HOME`,
    - `COPILOT_TIMEOUT_MS`,
    - `COPILOT_START_TIMEOUT_MS`,
+   - `COPILOT_FLEET_TIMEOUT_MS`,
+   - `COPILOT_FLEET_POLL_MS`,
+   - `COPILOT_FLEET_IDLE_GRACE_MS`,
    - volitelný `COPILOT_GITHUB_TOKEN`.
 2. Přidej `src/lib/events.ts`, který loguje jen užitečné session eventy:
    - streaming message delta,
