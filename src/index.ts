@@ -41,9 +41,13 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
   }
 
   if (selectedCommand === "auth") {
+    const config = readConfig();
     await withClient(async (client) => {
-      const authStatus = await client.getAuthStatus();
-      const models = await client.listModels();
+      const [authStatus, models] = await withTimeout(
+        "Copilot auth check",
+        Promise.all([client.getAuthStatus(), client.listModels()]),
+        config.startupTimeoutMs,
+      );
 
       console.log("[auth.getStatus]");
       console.log(JSON.stringify(authStatus, null, 2));
@@ -53,8 +57,9 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
   }
 
   if (selectedCommand === "models") {
+    const config = readConfig();
     await withClient(async (client) => {
-      const models = await client.listModels();
+      const models = await withTimeout("Copilot model list", client.listModels(), config.startupTimeoutMs);
       for (const model of models) {
         const policy = model.policy?.state ? ` policy=${model.policy.state}` : "";
         const billing = model.billing ? ` multiplier=${model.billing.multiplier}` : "";
@@ -108,12 +113,29 @@ async function withClient<T>(operation: (client: CopilotClient) => Promise<T>): 
   });
 
   try {
-    await client.start();
+    await withTimeout("Copilot client start", client.start(), config.startupTimeoutMs);
     return await operation(client);
   } finally {
     const errors = await client.stop();
     for (const error of errors) {
       console.error(error.message);
+    }
+  }
+}
+
+async function withTimeout<T>(label: string, promise: Promise<T>, timeoutMs: number): Promise<T> {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeout = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${timeoutMs} ms.`));
+    }, timeoutMs);
+  });
+
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
     }
   }
 }
