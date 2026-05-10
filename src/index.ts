@@ -36,7 +36,9 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
   }
 
   if (selectedCommand === "dry-run") {
-    console.log("Cvičení 02: přepni session do plan mode a spravuj plan.md přes RPC.");
+    console.log(
+      "Checkpoint po cvičení 01: SDK klient, auth, model list a ask session jsou připravené. Další krok je prompts/02-plan.md.",
+    );
     return;
   }
 
@@ -77,7 +79,7 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
 
     const config = readConfig();
     await withClient(async (client) => {
-      const events = createObservedConsoleEventLogger();
+      const events = createObservedConsoleEventLogger({ mode: config.eventLogMode });
       const session = await client.createSession({
         clientName: "github-copilot-sdk-training",
         model: config.model,
