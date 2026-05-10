@@ -57,6 +57,11 @@ není pro Copilot endpoint podporovaný.
 Pokud se headless Copilot proces v konkrétním prostředí startuje pomalu,
 uprav `COPILOT_START_TIMEOUT_MS`. Výchozí hodnota je 30 sekund.
 
+Fleet cvičení čeká na dokončení background lanes. Běh lze řídit přes
+`COPILOT_FLEET_TIMEOUT_MS`, `COPILOT_FLEET_POLL_MS` a
+`COPILOT_FLEET_IDLE_GRACE_MS`; při timeoutu lab aktivní tasky zruší a skončí
+chybou místo tichého odpojení session.
+
 Pure části labu lze ověřit bez živého Copilota:
 
 ```bash
