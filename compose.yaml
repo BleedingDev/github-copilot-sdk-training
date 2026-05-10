@@ -8,13 +8,11 @@ services:
     volumes:
       - .:/workspace
       - lab-node-modules:/workspace/node_modules
-      - lab-copilot-home:/workspace/.copilot-lab
+      - lab-copilot-home:/root/.copilot
     environment:
       COPILOT_MODEL: ${COPILOT_MODEL:-gpt-5.2-codex}
-      COPILOT_HOME: /workspace/.copilot-lab
       COPILOT_TIMEOUT_MS: ${COPILOT_TIMEOUT_MS:-180000}
-      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
-      GH_TOKEN: ${GH_TOKEN:-}
+      COPILOT_GITHUB_TOKEN: ${COPILOT_GITHUB_TOKEN:-}
     entrypoint: ["./scripts/docker-entrypoint.sh"]
     command: ["pnpm", "run", "lab:help"]
 

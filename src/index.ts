@@ -1,9 +1,10 @@
-const command = process.argv[2] ?? "help";
+const rawArgs = process.argv.slice(2);
+const command = rawArgs[0] === "--" ? (rawArgs[1] ?? "help") : (rawArgs[0] ?? "help");
 
 const help = `
 GitHub Copilot SDK Training
 
-Aktuální větev: aktuální checkout
+Aktuální stav: lokální checkout
 
 Dostupné příkazy:
   pnpm run lab:help       Vypíše tuto nápovědu
