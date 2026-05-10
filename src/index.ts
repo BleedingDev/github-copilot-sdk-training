@@ -15,7 +15,7 @@ const [command = "help", ...args] = normalizeCliArgs(process.argv.slice(2));
 const help = `
 GitHub Copilot SDK Training
 
-Aktuální větev: aktuální checkout
+Aktuální stav: lokální checkout
 
 Dostupné příkazy:
   pnpm run lab:help       Vypíše tuto nápovědu
