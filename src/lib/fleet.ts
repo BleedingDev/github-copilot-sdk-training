@@ -22,6 +22,31 @@ export type FleetWaitOptions = {
   readonly onProgress?: (snapshot: FleetTaskList, elapsedMs: number) => void;
 };
 
+export type FleetCommandArgs = {
+  readonly issueKey: string;
+  readonly live: boolean;
+};
+
+export function parseFleetCommandArgs(args: readonly string[]): FleetCommandArgs {
+  let issueKey = "LAB-101";
+  let live = false;
+
+  for (const arg of args) {
+    if (arg === "--live") {
+      live = true;
+      continue;
+    }
+
+    if (arg.startsWith("--")) {
+      throw new Error(`Neznámý fleet přepínač: ${arg}`);
+    }
+
+    issueKey = arg;
+  }
+
+  return { issueKey, live };
+}
+
 export function buildFleetPrompt(issue: LabIssue, repoMap: RepoMap): string {
   const paths = issue.candidatePaths.map((path) => `- ${path}`).join("\n");
   const modules = repoMap.modules
@@ -62,6 +87,34 @@ Stop conditions:
 - Do not redesign unrelated modules.
 - Do not invent Jira, Zephyr, Grafana, MCP, or Google Docs integrations.
 - Keep final synthesis short and include unresolved risks.`;
+}
+
+export function buildFleetPreview(issue: LabIssue, repoMap: RepoMap): string {
+  return `# Fleet preview: ${issue.key}
+
+${issue.title}
+
+Tohle je bezpečný preview režim. Nepouští živé background agenty a nespaluje
+premium requesty za paralelní lanes.
+
+Živé spuštění:
+
+\`\`\`bash
+pnpm run lab fleet ${issue.key} --live
+\`\`\`
+
+Před živým během zkontroluj:
+
+- model a limity účtu přes \`pnpm run lab models\`,
+- timeouty \`COPILOT_FLEET_TIMEOUT_MS\`, \`COPILOT_FLEET_POLL_MS\` a \`COPILOT_FLEET_IDLE_GRACE_MS\`,
+- že pracovní strom neobsahuje nesouvisející změny.
+
+SDK usage metriky ber jako telemetrii session. Skutečný dopad agentů ověřuj
+přes \`git status --short\` a \`git diff --stat\`.
+
+Prompt, který dostane fleet:
+
+${buildFleetPrompt(issue, repoMap)}`;
 }
 
 export async function waitForFleetTasksToSettle(

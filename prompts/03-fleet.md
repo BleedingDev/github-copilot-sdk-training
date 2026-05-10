@@ -15,28 +15,34 @@ Kontext:
 
    ```bash
    pnpm run lab fleet LAB-101
+   pnpm run lab fleet LAB-101 --live
    ```
 
-2. Příkaz vytvoří session se stejným modelem jako ostatní příkazy.
-3. Nejdřív zapíše plán přes existující `buildIssuePlan(...)`.
-4. Pak spustí:
+2. Příkaz bez `--live` je bezpečný preview režim:
+   - nevytváří SDK session,
+   - nespouští background agenty,
+   - vypíše prompt, cost upozornění a přesný příkaz pro živý běh.
+3. Příkaz s `--live` vytvoří session se stejným modelem jako ostatní příkazy.
+4. Živý běh nejdřív zapíše plán přes existující `buildIssuePlan(...)`.
+5. Pak spustí:
 
    ```ts
    await session.rpc.fleet.start({ prompt });
    ```
 
-5. Fleet prompt musí výslovně rozdělit práci na nezávislé lanes:
+6. Fleet prompt musí výslovně rozdělit práci na nezávislé lanes:
    - Dev API,
    - Dev UI,
    - QA evidence,
    - Docs evidence.
-6. Po spuštění vypiš:
+7. Po živém spuštění vypiš:
    - výsledek `fleet.start`,
    - počáteční `session.rpc.tasks.list()`,
    - průběžný stav přes polling `session.rpc.tasks.list()`,
    - finální `session.rpc.tasks.list()`,
-   - `session.rpc.usage.getMetrics()`.
-7. Čekej na dokončení tasků s timeoutem:
+   - `session.rpc.usage.getMetrics()`,
+   - skutečný dopad přes `git status --short` a `git diff --stat`.
+8. Čekej na dokončení tasků s timeoutem:
    - timeout čti z `COPILOT_FLEET_TIMEOUT_MS`,
    - interval čti z `COPILOT_FLEET_POLL_MS`,
    - quiescence interval čti z `COPILOT_FLEET_IDLE_GRACE_MS`,
@@ -48,6 +54,8 @@ Kontext:
 Akceptace:
 
 - `pnpm run typecheck` projde.
-- `pnpm run lab fleet LAB-101` existuje.
+- `pnpm run lab fleet LAB-101` existuje a je preview bez živých agentů.
+- `pnpm run lab fleet LAB-101 --live` spustí živý SDK fleet.
 - Prompt jasně říká, že lanes nesmí přepisovat stejné soubory.
-- Příkaz nekončí hned po `fleet.start`; buď vypíše finální task stav, nebo řízeně selže.
+- Živý příkaz nekončí hned po `fleet.start`; buď vypíše finální task stav, nebo řízeně selže.
+- Živý příkaz ověřuje změny přes Git, ne přes `usage.getMetrics().codeChanges`.
