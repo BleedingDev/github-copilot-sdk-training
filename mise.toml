@@ -18,7 +18,7 @@ depends = ["setup"]
 run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run lab:help && pnpm run lab:dry-run'"
 
 [tasks."lab:help"]
-description = "Vypíše nápovědu aktuální stage větve."
+description = "Vypíše nápovědu aktuálního cvičení."
 run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run lab:help'"
 
 [tasks."lab:dry-run"]

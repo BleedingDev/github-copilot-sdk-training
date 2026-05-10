@@ -36,7 +36,6 @@ Užitečné tasky:
 ```bash
 mise run lab:help
 mise run lab:dry-run
-mise run lab:models
 mise run docker:build
 mise run docker:shell
 mise run docker:verify
