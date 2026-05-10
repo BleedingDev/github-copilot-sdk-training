@@ -2,6 +2,11 @@ import type { SessionEvent } from "@github/copilot-sdk";
 
 type UnknownRecord = Record<string, unknown>;
 
+export type ObservedEventLogger = {
+  readonly onEvent: (event: SessionEvent) => void;
+  readonly assertNoSessionErrors: () => void;
+};
+
 export function createConsoleEventLogger() {
   return (event: SessionEvent): void => {
     const data = eventData(event);
@@ -43,9 +48,35 @@ export function createConsoleEventLogger() {
   };
 }
 
+export function createObservedConsoleEventLogger(): ObservedEventLogger {
+  const errors: string[] = [];
+  const logger = createConsoleEventLogger();
+
+  return {
+    onEvent(event: SessionEvent): void {
+      if (event.type === "session.error" || event.type === "model.call_failure") {
+        errors.push(readEventError(event));
+      }
+
+      logger(event);
+    },
+
+    assertNoSessionErrors(): void {
+      if (errors.length > 0) {
+        throw new Error(`Copilot session emitted error: ${errors.join("; ")}`);
+      }
+    },
+  };
+}
+
 function eventData(event: SessionEvent): UnknownRecord {
   const candidate = (event as { data?: unknown }).data;
   return isRecord(candidate) ? candidate : {};
+}
+
+function readEventError(event: SessionEvent): string {
+  const data = eventData(event);
+  return readString(data, "message") ?? readString(data, "error") ?? JSON.stringify(data);
 }
 
 function readString(record: UnknownRecord, key: string): string | undefined {
@@ -56,4 +87,3 @@ function readString(record: UnknownRecord, key: string): string | undefined {
 function isRecord(value: unknown): value is UnknownRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-

@@ -1,8 +1,9 @@
 import { approveAll, CopilotClient } from "@github/copilot-sdk";
+import { normalizeCliArgs, printCliError } from "./lib/cli.js";
 import { readConfig } from "./lib/config.js";
-import { createConsoleEventLogger } from "./lib/events.js";
+import { createObservedConsoleEventLogger } from "./lib/events.js";
 
-const [command = "help", ...args] = process.argv.slice(2);
+const [command = "help", ...args] = normalizeCliArgs(process.argv.slice(2));
 
 const help = `
 GitHub Copilot SDK Training
@@ -12,15 +13,21 @@ Aktuální větev: aktuální checkout
 Dostupné příkazy:
   pnpm run lab:help       Vypíše tuto nápovědu
   pnpm run lab:dry-run    Vypíše cíl aktuálního cvičení bez volání Copilota
-  pnpm run lab -- models  Vypíše modely dostupné pro aktuální Copilot účet
-  pnpm run lab -- ask     Pošle krátký prompt do Copilot SDK session
+  pnpm run lab auth       Ověří Copilot SDK autentizaci
+  pnpm run lab models     Vypíše modely dostupné pro aktuální Copilot účet
+  pnpm run lab ask        Pošle krátký prompt do Copilot SDK session
   pnpm run typecheck      Ověří TypeScript
 
 Další cvičení:
   Otevři prompts/02-plan.md a přidej programatické plan mode API.
 `;
 
-await main(command, args);
+try {
+  await main(command, args);
+} catch (error) {
+  printCliError(error);
+  process.exitCode = 1;
+}
 
 async function main(selectedCommand: string, selectedArgs: string[]): Promise<void> {
   if (selectedCommand === "help") {
@@ -30,6 +37,18 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
 
   if (selectedCommand === "dry-run") {
     console.log("Cvičení 02: přepni session do plan mode a spravuj plan.md přes RPC.");
+    return;
+  }
+
+  if (selectedCommand === "auth") {
+    await withClient(async (client) => {
+      const authStatus = await client.getAuthStatus();
+      const models = await client.listModels();
+
+      console.log("[auth.getStatus]");
+      console.log(JSON.stringify(authStatus, null, 2));
+      console.log(`\n[models.list] ${models.length} models available`);
+    });
     return;
   }
 
@@ -48,22 +67,25 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
   if (selectedCommand === "ask") {
     const prompt = selectedArgs.join(" ").trim();
     if (!prompt) {
-      throw new Error('Chybí prompt. Příklad: pnpm run lab -- ask "Shrň účel tohoto labu."');
+      throw new Error('Chybí prompt. Příklad: pnpm run lab ask "Shrň účel tohoto labu."');
     }
 
     const config = readConfig();
     await withClient(async (client) => {
+      const events = createObservedConsoleEventLogger();
       const session = await client.createSession({
         clientName: "github-copilot-sdk-training",
         model: config.model,
+        gitHubToken: config.gitHubToken,
         onPermissionRequest: approveAll,
         streaming: true,
         workingDirectory: process.cwd(),
-        onEvent: createConsoleEventLogger(),
+        onEvent: events.onEvent,
       });
 
       try {
         await session.sendAndWait({ prompt }, config.timeoutMs);
+        events.assertNoSessionErrors();
       } finally {
         await session.disconnect();
       }
@@ -79,11 +101,14 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
 async function withClient<T>(operation: (client: CopilotClient) => Promise<T>): Promise<T> {
   const config = readConfig();
   const client = new CopilotClient({
-    copilotHome: config.copilotHome,
+    ...(config.copilotHome ? { copilotHome: config.copilotHome } : {}),
+    ...(config.gitHubToken ? { gitHubToken: config.gitHubToken } : {}),
     cwd: process.cwd(),
+    useLoggedInUser: true,
   });
 
   try {
+    await client.start();
     return await operation(client);
   } finally {
     const errors = await client.stop();
