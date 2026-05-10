@@ -62,6 +62,23 @@ Fleet cvičení čeká na dokončení background lanes. Běh lze řídit přes
 `COPILOT_FLEET_IDLE_GRACE_MS`; při timeoutu lab aktivní tasky zruší a skončí
 chybou místo tichého odpojení session.
 
+`pnpm run lab fleet LAB-101` je záměrně jen preview. Živý běh, který spouští
+background agenty a spotřebovává premium requesty, vyžaduje explicitní flag:
+
+```bash
+pnpm run lab fleet LAB-101 --live
+```
+
+Po živém běhu lab vypíše `git status` a `git diff --stat`, protože SDK
+`usage.getMetrics().codeChanges` je telemetry snapshot a nemusí odpovídat
+skutečnému pracovnímu stromu.
+
+Event stream je výchozí kompaktní. Pro plný raw výpis nastav:
+
+```bash
+COPILOT_EVENT_LOG=full pnpm run lab ask "Shrň účel labu."
+```
+
 Pure části labu lze ověřit bez živého Copilota:
 
 ```bash

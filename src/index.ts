@@ -22,7 +22,7 @@ Dostupné příkazy:
   pnpm run typecheck      Ověří TypeScript
 
 Další cvičení:
-  Otevři prompts/02-plan.md a přidej programatické plan mode API.
+  Otevři prompts/03-fleet.md a přidej programatický fleet.
 `;
 
 try {
@@ -39,7 +39,9 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
   }
 
   if (selectedCommand === "dry-run") {
-    console.log("Cvičení 03: spusť programatický fleet přes session.rpc.fleet.start().");
+    console.log(
+      "Checkpoint po cvičení 02: programatický plan mode je připravený. Další krok je prompts/03-fleet.md.",
+    );
     return;
   }
 
@@ -80,7 +82,7 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
 
     const config = readConfig();
     await withClient(async (client) => {
-      const events = createObservedConsoleEventLogger();
+      const events = createObservedConsoleEventLogger({ mode: config.eventLogMode });
       const session = await client.createSession({
         clientName: "github-copilot-sdk-training",
         model: config.model,

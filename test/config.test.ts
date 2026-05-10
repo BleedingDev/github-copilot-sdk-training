@@ -6,6 +6,7 @@ describe("readConfig", () => {
     const config = readConfig({});
 
     expect(config.model).toBe("gpt-5.2-codex");
+    expect(config.eventLogMode).toBe("compact");
     expect(config.copilotHome).toBeUndefined();
     expect(config.timeoutMs).toBe(180_000);
     expect(config.startupTimeoutMs).toBe(30_000);
@@ -25,9 +26,11 @@ describe("readConfig", () => {
       COPILOT_FLEET_POLL_MS: "4567",
       COPILOT_FLEET_IDLE_GRACE_MS: "6789",
       COPILOT_GITHUB_TOKEN: "github_pat_test",
+      COPILOT_EVENT_LOG: "full",
     });
 
     expect(config.model).toBe("claude-opus-4.5");
+    expect(config.eventLogMode).toBe("full");
     expect(config.copilotHome).toContain(".tmp-copilot");
     expect(config.timeoutMs).toBe(12_345);
     expect(config.startupTimeoutMs).toBe(23_456);

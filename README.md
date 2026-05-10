@@ -64,3 +64,21 @@ docker compose run --rm lab zsh
 
 Živá volání do Copilot SDK vyžadují přihlášení nebo token podle pravidel týmu.
 Bez přihlášení stále fungují suché běhy, typecheck a testy.
+
+Fleet cvičení čeká na dokončení background lanes s timeoutem. Pokud se lane
+zasekne, příkaz ji zruší a skončí chybou, aby běh nevypadal falešně úspěšně.
+Výchozí `fleet` příkaz je bezpečný preview režim:
+
+```bash
+pnpm run lab fleet LAB-101
+```
+
+Živý fleet pouštěj explicitně:
+
+```bash
+pnpm run lab fleet LAB-101 --live
+```
+
+SDK usage metriky jsou užitečné pro náklady a timing, ale skutečné změny
+ověřuj přes `git status --short` a `git diff --stat`. Pro raw event stream
+nastav `COPILOT_EVENT_LOG=full`; výchozí režim je kompaktní.
