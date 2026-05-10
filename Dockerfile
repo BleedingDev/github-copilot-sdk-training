@@ -5,6 +5,7 @@ ENV PROTO_HOME=/root/.proto
 ENV PATH=/root/.proto/shims:/root/.proto/bin:$PATH
 ENV COPILOT_MODEL=gpt-5.2-codex
 ENV COPILOT_TIMEOUT_MS=180000
+ENV COPILOT_START_TIMEOUT_MS=30000
 ENV NODE_OPTIONS=--no-deprecation
 
 RUN apt-get update \

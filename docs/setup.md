@@ -55,6 +55,9 @@ Headless varianta má používat fine-grained token s `Copilot Requests`
 permission v proměnné `COPILOT_GITHUB_TOKEN`. Classic PAT z `gh auth token`
 není pro Copilot endpoint podporovaný.
 
+Pokud se headless Copilot proces v konkrétním prostředí startuje pomalu,
+uprav `COPILOT_START_TIMEOUT_MS`. Výchozí hodnota je 30 sekund.
+
 Pure části labu lze ověřit bez živého Copilota:
 
 ```bash
