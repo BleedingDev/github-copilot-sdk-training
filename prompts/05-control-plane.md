@@ -18,10 +18,11 @@ Kontext:
    - `instructionDirectories`,
    - `customAgents`,
    - `defaultAgent.excludedTools`.
+   `enableConfigDiscovery` nastav na `false`, aby demo nebralo osobní globální skills a instrukce z host stroje.
 3. Přidej příkaz:
 
    ```bash
-   pnpm run lab -- control-plane LAB-101
+   pnpm run lab control-plane LAB-101
    ```
 
 4. Příkaz vytvoří session a vypíše:
@@ -36,5 +37,6 @@ Akceptace:
 - `pnpm run typecheck` projde.
 - `pnpm test` projde.
 - Konfigurace explicitně odděluje Dev, QA a Docs agenty.
+- `instructionDirectories` míří na `instructions/workshop`.
+- `skillDirectories` míří jen na lokální `skills`.
 - Default agent nemá vidět drahé nebo rizikové nástroje, pokud jsou určené jen pro specializované agenty.
-

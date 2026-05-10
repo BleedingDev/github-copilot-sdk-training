@@ -7,8 +7,8 @@ export type ControlPlaneConfig = Pick<
 
 export function buildControlPlaneConfig(env: NodeJS.ProcessEnv = process.env): ControlPlaneConfig {
   return {
-    enableConfigDiscovery: true,
-    instructionDirectories: ["instructions/github-copilot-sdk"],
+    enableConfigDiscovery: false,
+    instructionDirectories: ["instructions/workshop"],
     skillDirectories: ["skills"],
     mcpServers: buildEnterpriseMcpServers(env),
     customAgents: buildCustomAgents(),
@@ -97,4 +97,3 @@ function addHttpMcpServer(
     timeout: 30_000,
   };
 }
-

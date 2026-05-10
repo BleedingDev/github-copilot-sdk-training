@@ -1,46 +1,39 @@
-[tools]
-node = "26.0.0"
-pnpm = "10.33.4"
-
 [env]
 COPILOT_MODEL = "gpt-5.2-codex"
-COPILOT_HOME = ".copilot-lab"
 COPILOT_TIMEOUT_MS = "180000"
+NODE_OPTIONS = "--no-deprecation"
 
 [tasks.setup]
 description = "Nainstaluje pnpm závislosti přes lockfile."
-run = "pnpm install --frozen-lockfile"
+run = "bash -lc 'proto install && eval \"$(proto activate bash --export)\" && pnpm install --frozen-lockfile'"
 
 [tasks.verify]
 description = "Spustí TypeScript typecheck a unit testy."
 depends = ["setup"]
-run = "pnpm run verify"
+run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run verify'"
 
 [tasks.start]
 description = "Rychlý start pro účastníka: setup, help a dry-run."
 depends = ["setup"]
-run = [
-  "pnpm run lab:help",
-  "pnpm run lab:dry-run"
-]
+run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run lab:help && pnpm run lab:dry-run'"
 
 [tasks."lab:help"]
 description = "Vypíše nápovědu aktuální stage větve."
-run = "pnpm run lab:help"
+run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run lab:help'"
 
 [tasks."lab:dry-run"]
 description = "Vypíše cíl aktuálního cvičení bez volání Copilota."
-run = "pnpm run lab:dry-run"
+run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run lab:dry-run'"
 
 [tasks."lab:models"]
 description = "Vypíše modely dostupné pro aktuální Copilot účet."
 depends = ["setup"]
-run = "pnpm run lab -- models"
+run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run lab models'"
 
 [tasks."lab:challenge"]
 description = "Vypíše challenge brief pro LAB-101."
 depends = ["setup"]
-run = "pnpm run lab -- challenge LAB-101"
+run = "bash -lc 'eval \"$(proto activate bash --export)\" && pnpm run lab challenge LAB-101'"
 
 [tasks."docker:build"]
 description = "Postaví lokální Docker image pro lab."

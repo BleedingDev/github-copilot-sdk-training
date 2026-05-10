@@ -28,15 +28,24 @@ Corepack.
 
 ```bash
 proto install
-proto run pnpm -- install --frozen-lockfile
-proto run pnpm -- run lab:help
-proto run pnpm -- run lab:dry-run
-proto run pnpm -- run verify
+eval "$(proto activate zsh)"
+pnpm install --frozen-lockfile
+pnpm run lab:help
+pnpm run lab:dry-run
+pnpm run verify
 ```
 
-Pokud používáš `mise`, jsou připravené tasky nad stejnými příkazy:
+Před živými SDK voláními ověř Copilot CLI autentizaci:
 
 ```bash
+pnpm exec copilot login
+pnpm run lab auth
+```
+
+Pokud používáš `mise`, nejdřív trustni lokální konfiguraci:
+
+```bash
+mise trust
 mise run start
 mise run verify
 ```
