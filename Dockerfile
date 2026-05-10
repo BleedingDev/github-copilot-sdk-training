@@ -3,9 +3,9 @@ FROM debian:bookworm-slim
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PROTO_HOME=/root/.proto
 ENV PATH=/root/.proto/shims:/root/.proto/bin:$PATH
-ENV COPILOT_HOME=/workspace/.copilot-lab
 ENV COPILOT_MODEL=gpt-5.2-codex
 ENV COPILOT_TIMEOUT_MS=180000
+ENV NODE_OPTIONS=--no-deprecation
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
