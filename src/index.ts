@@ -5,11 +5,14 @@ import { loadIssue, loadRepoMap } from "./lib/data.js";
 import { createObservedConsoleEventLogger } from "./lib/events.js";
 import {
   assertFleetTasksStarted,
+  buildFleetPreview,
   buildFleetPrompt,
   formatFleetTaskSummary,
+  parseFleetCommandArgs,
   waitForFleetTasksToSettle,
   type FleetTaskList,
 } from "./lib/fleet.js";
+import { readWorktreeChangeSummary } from "./lib/git.js";
 import { createGuardrailHooks } from "./lib/hooks.js";
 import { guardedPermissionHandler } from "./lib/permissions.js";
 import { buildIssuePlan } from "./lib/plan.js";
@@ -28,7 +31,9 @@ Dostupné příkazy:
   pnpm run lab models     Vypíše modely dostupné pro aktuální Copilot účet
   pnpm run lab ask        Pošle krátký prompt do Copilot SDK session
   pnpm run lab plan       Zapíše a přečte SDK plan pro issue
-  pnpm run lab fleet      Spustí programatický fleet pro issue
+  pnpm run lab fleet      Ukáže bezpečný fleet preview pro issue
+  pnpm run lab fleet LAB-101 --live
+                         Spustí živý programatický fleet
   pnpm run typecheck      Ověří TypeScript
 
 Další cvičení:
@@ -49,7 +54,9 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
   }
 
   if (selectedCommand === "dry-run") {
-    console.log("Cvičení 05: přidej control-plane pro existující MCP, skills, instrukce a custom agenty.");
+    console.log(
+      "Checkpoint po cvičení 04: guardrails, hooks a audit jsou připravené. Další krok je prompts/05-control-plane.md.",
+    );
     return;
   }
 
@@ -90,7 +97,7 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
 
     const config = readConfig();
     await withClient(async (client) => {
-      const events = createObservedConsoleEventLogger();
+      const events = createObservedConsoleEventLogger({ mode: config.eventLogMode });
       const session = await client.createSession({
         clientName: "github-copilot-sdk-training",
         model: config.model,
@@ -146,14 +153,19 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
   }
 
   if (selectedCommand === "fleet") {
-    const issueKey = selectedArgs[0] ?? "LAB-101";
+    const { issueKey, live } = parseFleetCommandArgs(selectedArgs);
     const [issue, repoMap] = await Promise.all([loadIssue(issueKey), loadRepoMap()]);
     const plan = buildIssuePlan(issue, repoMap);
     const fleetPrompt = buildFleetPrompt(issue, repoMap);
     const config = readConfig();
 
+    if (!live) {
+      console.log(buildFleetPreview(issue, repoMap));
+      return;
+    }
+
     await withClient(async (client) => {
-      const events = createObservedConsoleEventLogger();
+      const events = createObservedConsoleEventLogger({ mode: config.eventLogMode });
       const session = await client.createSession({
         clientName: "github-copilot-sdk-training",
         model: config.model,
@@ -192,6 +204,7 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
           throw error;
         }
         const usage = await session.rpc.usage.getMetrics();
+        const worktree = await readWorktreeChangeSummary();
 
         console.log("\n[fleet.start]");
         console.log(JSON.stringify(fleetResult, null, 2));
@@ -199,8 +212,15 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
         console.log(JSON.stringify(initialTasks, null, 2));
         console.log("\n[tasks.list.final]");
         console.log(JSON.stringify(finalTasks, null, 2));
+        console.log("\n[git.status]");
+        console.log(worktree.status || "(clean)");
+        console.log("\n[git.diffStat]");
+        console.log(worktree.diffStat || "(no tracked file diff)");
         console.log("\n[usage.getMetrics]");
         console.log(JSON.stringify(usage, null, 2));
+        console.log(
+          "\n[verification.note]\nSDK codeChanges metriky jsou jen telemetry snapshot. Pro reálný dopad agentů používej git.status a git.diffStat výše.",
+        );
         events.assertNoSessionErrors();
       } finally {
         await session.disconnect();

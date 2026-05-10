@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 
 export type LabConfig = {
   readonly model: string;
+  readonly eventLogMode: EventLogMode;
   readonly copilotHome?: string;
   readonly timeoutMs: number;
   readonly startupTimeoutMs: number;
@@ -11,7 +12,10 @@ export type LabConfig = {
   readonly gitHubToken?: string;
 };
 
+export type EventLogMode = "compact" | "full";
+
 const DEFAULT_MODEL = "gpt-5.2-codex";
+const DEFAULT_EVENT_LOG_MODE: EventLogMode = "compact";
 const DEFAULT_TIMEOUT_MS = 180_000;
 const DEFAULT_STARTUP_TIMEOUT_MS = 30_000;
 const DEFAULT_FLEET_TIMEOUT_MS = 180_000;
@@ -26,9 +30,11 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): LabConfig {
   const fleetIdleGraceMs = Number(env.COPILOT_FLEET_IDLE_GRACE_MS ?? DEFAULT_FLEET_IDLE_GRACE_MS);
   const copilotHome = env.COPILOT_HOME?.trim();
   const gitHubToken = env.COPILOT_GITHUB_TOKEN?.trim();
+  const eventLogMode = readEventLogMode(env.COPILOT_EVENT_LOG);
 
   return {
     model: env.COPILOT_MODEL?.trim() || DEFAULT_MODEL,
+    eventLogMode,
     copilotHome: copilotHome ? resolve(copilotHome) : undefined,
     timeoutMs: Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : DEFAULT_TIMEOUT_MS,
     startupTimeoutMs:
@@ -39,4 +45,12 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): LabConfig {
       Number.isFinite(fleetIdleGraceMs) && fleetIdleGraceMs >= 0 ? fleetIdleGraceMs : DEFAULT_FLEET_IDLE_GRACE_MS,
     gitHubToken: gitHubToken || undefined,
   };
+}
+
+function readEventLogMode(value: string | undefined): EventLogMode {
+  if (value?.trim() === "full") {
+    return "full";
+  }
+
+  return DEFAULT_EVENT_LOG_MODE;
 }
