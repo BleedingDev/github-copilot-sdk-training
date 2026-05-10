@@ -17,7 +17,7 @@ workflow a guardrails, ne řešit frameworkovou nebo doménovou složitost.
 ## Pravidla práce
 
 - Pracuj pouze s aktuálním checkoutem.
-- Nehledej checkpointy, jiné větve ani hotová řešení.
+- Nepátrej po hotových řešeních mimo zadání.
 - Každou změnu drž v rozsahu aktuálního zadání.
 - Pokud chybí další krok, vyžádej si ho od lektora.
 
