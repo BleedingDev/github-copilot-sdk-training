@@ -5,7 +5,7 @@ Implementuj třetí vrstvu labu: SDK ekvivalent `/fleet`.
 Kontext:
 
 - Pracuj pouze v aktuálním checkoutu.
-- Už existuje `pnpm run lab -- plan LAB-101`.
+- Už existuje `pnpm run lab plan LAB-101`.
 - Tohle cvičení je jen o `session.rpc.fleet.start(...)`, usage metrikách a task listu.
 - Nepřidávej enterprise MCP integrace, custom agents ani guardrails.
 
@@ -14,7 +14,7 @@ Kontext:
 1. Přidej příkaz:
 
    ```bash
-   pnpm run lab -- fleet LAB-101
+   pnpm run lab fleet LAB-101
    ```
 
 2. Příkaz vytvoří session se stejným modelem jako ostatní příkazy.
@@ -38,6 +38,6 @@ Kontext:
 Akceptace:
 
 - `pnpm run typecheck` projde.
-- `pnpm run lab -- fleet LAB-101` existuje.
+- `pnpm run lab fleet LAB-101` existuje.
 - Prompt jasně říká, že lanes nesmí přepisovat stejné soubory.
 
