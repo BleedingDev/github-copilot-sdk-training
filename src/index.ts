@@ -3,7 +3,13 @@ import { normalizeCliArgs, printCliError } from "./lib/cli.js";
 import { readConfig } from "./lib/config.js";
 import { loadIssue, loadRepoMap } from "./lib/data.js";
 import { createObservedConsoleEventLogger } from "./lib/events.js";
-import { buildFleetPrompt } from "./lib/fleet.js";
+import {
+  assertFleetTasksStarted,
+  buildFleetPrompt,
+  formatFleetTaskSummary,
+  waitForFleetTasksToSettle,
+  type FleetTaskList,
+} from "./lib/fleet.js";
 import { buildIssuePlan } from "./lib/plan.js";
 
 const [command = "help", ...args] = normalizeCliArgs(process.argv.slice(2));
@@ -31,7 +37,7 @@ try {
   await main(command, args);
 } catch (error) {
   printCliError(error);
-  process.exitCode = 1;
+  process.exit(1);
 }
 
 async function main(selectedCommand: string, selectedArgs: string[]): Promise<void> {
@@ -158,13 +164,36 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
       try {
         await session.rpc.plan.update({ content: plan });
         const fleetResult = await session.rpc.fleet.start({ prompt: fleetPrompt });
-        const tasks = await session.rpc.tasks.list();
+        events.assertNoSessionErrors();
+        const initialTasks = await session.rpc.tasks.list();
+        assertFleetTasksStarted(initialTasks);
+        let finalTasks: FleetTaskList;
+        try {
+          finalTasks = await waitForFleetTasksToSettle(() => session.rpc.tasks.list(), {
+            timeoutMs: config.fleetTimeoutMs,
+            pollMs: config.fleetPollMs,
+            idleGraceMs: config.fleetIdleGraceMs,
+            onProgress(snapshot, elapsedMs) {
+              console.log(`[fleet.wait] ${elapsedMs}ms ${formatFleetTaskSummary(snapshot)}`);
+            },
+          });
+        } catch (error) {
+          const latestTasks = await session.rpc.tasks.list();
+          for (const task of latestTasks.tasks) {
+            if (task.status === "running") {
+              await session.rpc.tasks.cancel({ id: task.id });
+            }
+          }
+          throw error;
+        }
         const usage = await session.rpc.usage.getMetrics();
 
         console.log("\n[fleet.start]");
         console.log(JSON.stringify(fleetResult, null, 2));
-        console.log("\n[tasks.list]");
-        console.log(JSON.stringify(tasks, null, 2));
+        console.log("\n[tasks.list.initial]");
+        console.log(JSON.stringify(initialTasks, null, 2));
+        console.log("\n[tasks.list.final]");
+        console.log(JSON.stringify(finalTasks, null, 2));
         console.log("\n[usage.getMetrics]");
         console.log(JSON.stringify(usage, null, 2));
         events.assertNoSessionErrors();
@@ -188,14 +217,38 @@ async function withClient<T>(operation: (client: CopilotClient) => Promise<T>): 
     cwd: process.cwd(),
     useLoggedInUser: true,
   });
+  let operationFailed = false;
 
   try {
     await withTimeout("Copilot client start", client.start(), config.startupTimeoutMs);
     return await operation(client);
+  } catch (error) {
+    operationFailed = true;
+    throw error;
   } finally {
-    const errors = await client.stop();
-    for (const error of errors) {
-      console.error(error.message);
+    try {
+      const errors = await withTimeout("Copilot client stop", client.stop(), config.startupTimeoutMs);
+      for (const error of errors) {
+        console.error(error.message);
+      }
+
+      if (operationFailed) {
+        await withTimeout("Copilot client force stop", client.forceStop(), 5_000);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      try {
+        await withTimeout("Copilot client force stop", client.forceStop(), 5_000);
+      } catch (forceStopError) {
+        const forceStopMessage = forceStopError instanceof Error ? forceStopError.message : String(forceStopError);
+        console.error(`Copilot client force stop failed: ${forceStopMessage}`);
+      }
+
+      if (!operationFailed) {
+        throw error;
+      }
+
+      console.error(`Copilot client cleanup failed after command error: ${message}`);
     }
   }
 }
