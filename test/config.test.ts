@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import { readConfig } from "../src/lib/config.js";
 
 describe("readConfig", () => {
-  it("uses explicit beta-friendly defaults", () => {
+  it("uses cost-aware workshop defaults", () => {
     const config = readConfig({});
 
-    expect(config.model).toBe("gpt-5.2-codex");
+    expect(config.model).toBe("gpt-5-mini");
     expect(config.planModel).toBe("gpt-5.3-codex");
     expect(config.implementModel).toBe("gpt-5.4-mini");
     expect(config.reviewModel).toBe("gpt-5.5");

@@ -19,7 +19,7 @@ export type LabConfig = {
 
 export type EventLogMode = "compact" | "full";
 
-const DEFAULT_MODEL = "gpt-5.2-codex";
+const DEFAULT_MODEL = "gpt-5-mini";
 const DEFAULT_PLAN_MODEL = "gpt-5.3-codex";
 const DEFAULT_IMPLEMENT_MODEL = "gpt-5.4-mini";
 const DEFAULT_REVIEW_MODEL = "gpt-5.5";
