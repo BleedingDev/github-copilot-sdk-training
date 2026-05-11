@@ -11,8 +11,16 @@ if [ -f /.dockerenv ] && [ -z "${COPILOT_GITHUB_TOKEN:-}${GH_TOKEN:-}${GITHUB_TO
       login_command+=" $(printf "%q" "$arg")"
     done
 
-    printf "y\n" | script -q /dev/null -c "$login_command"
-    exit $?
+    set +e
+    (
+      while true; do
+        sleep 2
+        printf "y\n"
+      done
+    ) | script -q /dev/null -c "$login_command"
+    status=${PIPESTATUS[1]}
+    set -e
+    exit "$status"
   fi
 fi
 
