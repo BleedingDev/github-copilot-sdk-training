@@ -20,7 +20,8 @@ describe("buildChallengeBrief", () => {
 
     expect(brief).toContain("Napiš vlastní prompt");
     expect(brief).toContain("usage/cost kontrolní body");
+    expect(brief).toContain("deterministický verification gate");
+    expect(brief).toContain("normalizuje na krátký artefakt");
     expect(brief).not.toContain("await session.rpc.fleet.start");
   });
 });
-

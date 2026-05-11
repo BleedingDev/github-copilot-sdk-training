@@ -15,6 +15,8 @@ Povinné části promptu:
 - Dev UI lane,
 - QA evidence lane,
 - Docs/second-brain lane,
+- deterministický verification gate po Dev lanes,
+- vložení verification artefaktu do další SDK fáze,
 - ownership hranice,
 - zákaz paralelních editací stejných souborů,
 - usage/cost kontrolní body,
@@ -28,6 +30,12 @@ ${issue.candidatePaths.map((path) => `- ${path}`).join("\n")}
 Non-goals:
 
 ${issue.nonGoals.map((goal) => `- ${goal}`).join("\n")}
+
+Verification gate:
+
+- Agent nemá sám donekonečna spouštět linter/testy.
+- Host workflow po Dev lanes programaticky spustí ověření.
+- Výstup z ověření se normalizuje na krátký artefakt.
+- Artefakt se pošle do další SDK fáze pro QA/Docs rozhodnutí.
 `;
 }
-
