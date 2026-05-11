@@ -72,6 +72,10 @@ Přihlášení uvnitř Docker varianty:
 docker compose run --rm lab pnpm run auth
 ```
 
+Docker nemá system keychain. Auth script proto v Dockeru automaticky potvrdí
+plaintext fallback. Token se uloží do Docker volume pro lab kontejner, ne do
+repozitáře.
+
 Fleet cvičení čeká na dokončení background lanes s timeoutem. Pokud se lane
 zasekne, příkaz ji zruší a skončí chybou, aby běh nevypadal falešně úspěšně.
 Výchozí `fleet` příkaz je bezpečný preview režim:

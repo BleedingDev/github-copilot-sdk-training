@@ -59,6 +59,15 @@ Předané env proměnné:
 `COPILOT_HOME` nastavujte jen záměrně, pokud chcete oddělený Copilot CLI config.
 Bez této proměnné CLI používá standardní přihlášení v `~/.copilot`.
 
+Interaktivní login v Dockeru:
+
+```bash
+docker compose run --rm lab pnpm run auth
+```
+
+Auth script v Dockeru automaticky potvrdí plaintext fallback. Token se uloží do
+Docker volume pro lab kontejner, ne do repozitáře.
+
 Bez autentizace pořád fungují:
 
 ```bash
