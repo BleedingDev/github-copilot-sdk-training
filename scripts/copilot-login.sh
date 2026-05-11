@@ -2,7 +2,18 @@
 set -euo pipefail
 
 if [ -f /.dockerenv ] && [ -z "${COPILOT_GITHUB_TOKEN:-}${GH_TOKEN:-}${GITHUB_TOKEN:-}" ]; then
-  printf 'y\n' | copilot login "$@"
-else
-  copilot login "$@"
+  echo "Docker nemá system keychain."
+  echo "Plaintext fallback bude potvrzen automaticky uvnitř Docker volume."
+
+  if command -v script >/dev/null 2>&1; then
+    login_command="pnpm exec copilot login"
+    for arg in "$@"; do
+      login_command+=" $(printf "%q" "$arg")"
+    done
+
+    printf "y\n" | script -q /dev/null -c "$login_command"
+    exit $?
+  fi
 fi
+
+exec copilot login "$@"

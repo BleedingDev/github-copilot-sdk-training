@@ -57,6 +57,10 @@ setup alias uvnitř kontejneru:
 docker compose run --rm lab pnpm run auth
 ```
 
+Docker nemá system keychain. Auth script proto v Dockeru automaticky potvrdí
+plaintext fallback. Token se uloží do Docker volume pro lab kontejner, ne do
+repozitáře.
+
 Headless varianta má používat fine-grained token s `Copilot Requests`
 permission v proměnné `COPILOT_GITHUB_TOKEN`. Classic PAT z `gh auth token`
 není pro Copilot endpoint podporovaný.
