@@ -6,6 +6,7 @@
   "packageManager": "pnpm@10.33.4",
   "scripts": {
     "setup": "pnpm install --frozen-lockfile",
+    "auth": "copilot login",
     "lab": "tsx src/index.ts",
     "lab:help": "tsx src/index.ts help",
     "lab:dry-run": "tsx src/index.ts dry-run",

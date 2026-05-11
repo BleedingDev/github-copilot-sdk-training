@@ -38,9 +38,10 @@ pnpm run verify
 Před živými SDK voláními ověř Copilot CLI autentizaci:
 
 ```bash
-pnpm exec copilot login
-pnpm run lab auth
+pnpm run auth
 ```
+
+`pnpm run lab auth` vznikne až v prvním cvičení.
 
 Pokud používáš `mise`, nejdřív trustni lokální konfiguraci:
 
@@ -64,6 +65,12 @@ docker compose run --rm lab zsh
 
 Živá volání do Copilot SDK vyžadují přihlášení nebo token podle pravidel týmu.
 Bez přihlášení stále fungují suché běhy, typecheck a testy.
+
+Přihlášení uvnitř Docker varianty:
+
+```bash
+docker compose run --rm lab pnpm run auth
+```
 
 Fleet cvičení čeká na dokončení background lanes s timeoutem. Pokud se lane
 zasekne, příkaz ji zruší a skončí chybou, aby běh nevypadal falešně úspěšně.

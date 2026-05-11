@@ -46,8 +46,15 @@ mise run docker:verify
 Živá SDK volání vyžadují funkční GitHub Copilot CLI autentizaci:
 
 ```bash
-pnpm exec copilot login
+pnpm run auth
 pnpm run lab auth
+```
+
+`pnpm run lab auth` vznikne až v prvním cvičení. Pro Docker použij stejný
+setup alias uvnitř kontejneru:
+
+```bash
+docker compose run --rm lab pnpm run auth
 ```
 
 Headless varianta má používat fine-grained token s `Copilot Requests`
