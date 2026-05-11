@@ -6,6 +6,11 @@ import { buildControlPlaneConfig } from "./lib/control-plane.js";
 import { loadIssue, loadRepoMap } from "./lib/data.js";
 import { createObservedConsoleEventLogger } from "./lib/events.js";
 import {
+  buildFinalWorkflowPreview,
+  parseFinalWorkflowArgs,
+  runFinalWorkflow,
+} from "./lib/final-workflow.js";
+import {
   assertFleetTasksStarted,
   buildFleetPreview,
   buildFleetPrompt,
@@ -38,6 +43,9 @@ Dostupné příkazy:
                          Spustí živý programatický fleet
   pnpm run lab control-plane  Vypíše SDK pohled na agenty, skills, MCP a usage
   pnpm run lab challenge      Vypíše challenge brief bez řešení
+  pnpm run lab final-flow     Ukáže finální model-policy + quality-gate orchestration
+  pnpm run lab final-flow LAB-101 --live
+                         Spustí živý finální workflow přes více modelů
   pnpm run typecheck      Ověří TypeScript
 
 Další cvičení:
@@ -68,6 +76,42 @@ async function main(selectedCommand: string, selectedArgs: string[]): Promise<vo
     const issueKey = selectedArgs[0] ?? "LAB-101";
     const issue = await loadIssue(issueKey);
     console.log(buildChallengeBrief(issue));
+    return;
+  }
+
+  if (selectedCommand === "final-flow") {
+    const config = readConfig();
+    const finalArgs = parseFinalWorkflowArgs(selectedArgs, config);
+    const [issue, repoMap] = await Promise.all([loadIssue(finalArgs.issueKey), loadRepoMap()]);
+
+    if (!finalArgs.live) {
+      console.log(buildFinalWorkflowPreview(issue, config));
+      return;
+    }
+
+    await withClient(async (client) => {
+      const report = await runFinalWorkflow(client, issue, repoMap, config, finalArgs);
+      console.log("\n[final-flow.summary]");
+      console.log(
+        JSON.stringify(
+          {
+            issueKey: report.issueKey,
+            modelPolicy: report.modelPolicy,
+            gates: report.gates.map((gate) => ({
+              stage: gate.stage,
+              attempt: gate.attempt,
+              ok: gate.ok,
+              nextStep: gate.nextStep,
+            })),
+            expect: report.expect
+              ? { ok: report.expect.ok, exitCode: report.expect.exitCode, command: report.expect.command }
+              : "skipped",
+          },
+          null,
+          2,
+        ),
+      );
+    });
     return;
   }
 
