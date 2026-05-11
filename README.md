@@ -21,6 +21,20 @@ workflow a guardrails, ne řešit frameworkovou nebo doménovou složitost.
 - Každou změnu drž v rozsahu aktuálního zadání.
 - Pokud chybí další krok, vyžádej si ho od lektora.
 
+## Zadání cvičení
+
+Všechna zadání jsou připravená v `prompts/`:
+
+- `prompts/01-session.md`
+- `prompts/02-plan.md`
+- `prompts/03-fleet.md`
+- `prompts/04-guardrails.md`
+- `prompts/05-control-plane.md`
+- `prompts/06-challenge.md`
+
+Můžeš je implementovat ručně, nebo je použít jako přesné zadání pro agenta.
+Referenční implementace není na `main`; záchytné body řeší lektor během workshopu.
+
 ## Setup
 
 Repo používá `proto` pro pin Node.js a pnpm. Žádný `npm install`, žádný
@@ -40,7 +54,6 @@ bude dostupný po dokončení prvního cvičení:
 
 ```bash
 pnpm exec copilot login
-pnpm run lab auth
 ```
 
 Pokud používáš `mise`, nejdřív trustni lokální konfiguraci:
