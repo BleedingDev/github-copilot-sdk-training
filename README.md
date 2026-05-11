@@ -86,6 +86,6 @@ Přihlášení uvnitř Docker varianty:
 docker compose run --rm lab pnpm run auth
 ```
 
-Docker nemá system keychain. Auth script proto v Dockeru automaticky potvrdí
-plaintext fallback. Token se uloží do Docker volume pro lab kontejner, ne do
+Docker nemá system keychain. Auth script proto v Dockeru zapne Copilot CLI
+`storeTokenPlaintext` a token uloží do Docker volume pro lab kontejner, ne do
 repozitáře.

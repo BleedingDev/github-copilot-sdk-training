@@ -65,8 +65,8 @@ Interaktivní login v Dockeru:
 docker compose run --rm lab pnpm run auth
 ```
 
-Auth script v Dockeru automaticky potvrdí plaintext fallback. Token se uloží do
-Docker volume pro lab kontejner, ne do repozitáře.
+Auth script v Dockeru zapne Copilot CLI `storeTokenPlaintext`. Token se uloží
+do Docker volume pro lab kontejner, ne do repozitáře.
 
 Bez autentizace pořád fungují:
 
