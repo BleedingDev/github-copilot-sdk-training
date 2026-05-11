@@ -49,12 +49,13 @@ pnpm run lab:dry-run
 pnpm run verify
 ```
 
-Před živými SDK voláními ověř Copilot CLI autentizaci. Příkaz `lab auth`
-bude dostupný po dokončení prvního cvičení:
+Před živými SDK voláními ověř Copilot CLI autentizaci:
 
 ```bash
-pnpm exec copilot login
+pnpm run auth
 ```
+
+`pnpm run lab auth` vznikne až v prvním cvičení.
 
 Pokud používáš `mise`, nejdřív trustni lokální konfiguraci:
 
@@ -78,3 +79,9 @@ docker compose run --rm lab zsh
 
 Živá volání do Copilot SDK vyžadují přihlášení nebo token podle pravidel týmu.
 Bez přihlášení stále fungují suché běhy, typecheck a testy.
+
+Přihlášení uvnitř Docker varianty:
+
+```bash
+docker compose run --rm lab pnpm run auth
+```

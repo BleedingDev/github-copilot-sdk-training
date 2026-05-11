@@ -15,6 +15,9 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@github/copilot':
+        specifier: 1.0.43
+        version: 1.0.43
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0

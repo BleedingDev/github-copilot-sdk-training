@@ -6,6 +6,7 @@
   "packageManager": "pnpm@10.33.4",
   "scripts": {
     "setup": "pnpm install --frozen-lockfile",
+    "auth": "./scripts/copilot-login.sh",
     "lab": "tsx src/index.ts",
     "lab:help": "tsx src/index.ts help",
     "lab:dry-run": "tsx src/index.ts dry-run",
@@ -21,6 +22,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@github/copilot": "1.0.43",
     "@types/node": "^25.6.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
