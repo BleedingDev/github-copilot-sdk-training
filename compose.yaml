@@ -10,7 +10,7 @@ services:
       - lab-node-modules:/workspace/node_modules
       - lab-copilot-home:/root/.copilot
     environment:
-      COPILOT_MODEL: ${COPILOT_MODEL:-gpt-5.2-codex}
+      COPILOT_MODEL: ${COPILOT_MODEL:-gpt-5-mini}
       COPILOT_TIMEOUT_MS: ${COPILOT_TIMEOUT_MS:-180000}
       COPILOT_START_TIMEOUT_MS: ${COPILOT_START_TIMEOUT_MS:-30000}
       COPILOT_FLEET_TIMEOUT_MS: ${COPILOT_FLEET_TIMEOUT_MS:-180000}
